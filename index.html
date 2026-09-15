@@ -1,13 +1,449 @@
+<!DOCTYPE html>
 <html>
 
 <head>
     <title>PahalOS</title>
     <style>
+        @font-face {
+            font-family: Pixelbasel;
+            src: url(fonts/Pixelbasel.ttf);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #080a10;
+            background-image: radial-gradient(#1c2333 1px, transparent 1px);
+            background-size: 24px 24px;
+            overflow: hidden;
+            font-family: Pixelbasel, monospace, sans-serif;
+            color: greenyellow;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .desktop {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            padding: 8px 4px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-align: center;
+            gap: 6px;
+        }
+
+        .icon:hover {
+            border: 1px solid greenyellow;
+            background: rgba(173, 255, 47, 0.08);
+        }
+
+        .icon span {
+            font-size: 13px;
+            color: greenyellow;
+        }
+
+        .window {
+            position: absolute;
+            background: #0e121d;
+            border: 2px solid greenyellow;
+            box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.85);
+            min-width: 320px;
+            display: none;
+            flex-direction: column;
+        }
+
+        .titlebar {
+            background: greenyellow;
+            color: #080a10;
+            padding: 6px 10px;
+            font-size: 16px;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .titlebar:active {
+            cursor: grabbing;
+        }
+
+        .titlecontrols {
+            display: flex;
+            gap: 4px;
+        }
+
+        .titlebtn {
+            border: 1px solid #080a10;
+            font-family: Pixelbasel;
+            font-size: 13px;
+            padding: 1px 7px;
+            cursor: pointer;
+        }
+
+        .btnmin {
+            background: #facc15;
+            color: #000;
+        }
+
+        .btnclose {
+            background: #ff3344;
+            color: #fff;
+        }
+
+        .content {
+            padding: 14px;
+            font-size: 15px;
+            line-height: 1.4;
+            color: #e2e8f0;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .content h3 {
+            color: greenyellow;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .content p {
+            margin-bottom: 8px;
+        }
+
+        .notepad {
+            width: 100%;
+            height: 140px;
+            background: #06080d;
+            border: 1px solid #334155;
+            color: greenyellow;
+            font-family: Pixelbasel;
+            font-size: 15px;
+            padding: 8px;
+            resize: none;
+            outline: none;
+        }
+
+        .filegrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .fileitem {
+            border: 1px solid #334155;
+            padding: 10px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            gap: 6px;
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+
+        .fileitem:hover {
+            border-color: greenyellow;
+            background: rgba(173, 255, 47, 0.08);
+            color: greenyellow;
+        }
+
+        .menu {
+            position: absolute;
+            bottom: 44px;
+            left: 0;
+            width: 200px;
+            background: #0e121d;
+            border: 2px solid greenyellow;
+            box-shadow: 4px -4px 0px rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            z-index: 999999;
+        }
+
+        .menu.show {
+            display: flex;
+        }
+
+        .menuitem {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: greenyellow;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .menuitem:hover {
+            background: greenyellow;
+            color: #080a10;
+        }
+
+        .taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 42px;
+            background: #0d111a;
+            border-top: 2px solid greenyellow;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            z-index: 99999;
+        }
+
+        .taskbarleft {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .taskbtn {
+            background: transparent;
+            color: greenyellow;
+            border: 1px solid greenyellow;
+            font-family: Pixelbasel;
+            font-size: 14px;
+            padding: 5px 12px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .taskbtn:hover,
+        .taskbtn.active {
+            background: greenyellow;
+            color: #080a10;
+        }
+
+        #menubtn {
+            display: inline-block;
+        }
+
+        .clock {
+            font-size: 16px;
+            color: greenyellow;
+        }
     </style>
 </head>
 
 <body>
-    <h1 class="title">PahalOS</h1>
+    <div class="desktop" id="desktop"></div>
+    <div id="windowcontainer"></div>
+    <div class="menu" id="menu"></div>
+
+    <div class="taskbar">
+        <div class="taskbarleft" id="taskbarleft">
+            <button class="taskbtn" id="menubtn">menu</button>
+        </div>
+        <div class="clock" id="clock">00:00:00</div>
+    </div>
+
+    <script>
+        const appConfigs = [
+            {
+                id: 'welcome',
+                title: 'pahalos | welcome',
+                label: 'welcome',
+                icon: '💻',
+                x: 130, y: 50, w: 380,
+                autoOpen: true,
+                body: `<h3>pahalos online</h3><p>browser based os built with pure html css and js.</p><p>no passwords, zero login screens, grab the green bar to drag windows around.</p>`
+            },
+            {
+                id: 'notes',
+                title: 'scratchpad',
+                label: 'notepad',
+                icon: '📝',
+                x: 540, y: 120, w: 350,
+                body: `<textarea class="notepad" placeholder="type quick notes here..."></textarea>`
+            },
+            {
+                id: 'files',
+                title: 'my files',
+                label: 'files',
+                icon: '📁',
+                x: 240, y: 200, w: 400,
+                body: `<p style="color: #94a3b8; margin-bottom: 8px;">directory: /home/pahal</p><div class="filegrid">
+                    <div class="fileitem" data-action="alert" data-msg="project: filepeek"><span>📂</span><span>projects</span></div>
+                    <div class="fileitem" data-action="alert" data-msg="study notes and drafts"><span>📂</span><span>study</span></div>
+                    <div class="fileitem" data-action="launch" data-target="notes"><span>📄</span><span>todo.txt</span></div>
+                </div>`
+            },
+            {
+                id: 'about',
+                title: 'about pahalos',
+                label: 'about',
+                icon: 'ℹ️',
+                x: 400, y: 170, w: 330,
+                body: `<h3>pahalos v1.0</h3><p>created by: pahal</p><p>stack: vanilla html, css, js</p><p>status: operational</p>`
+            }
+        ];
+
+        let layerCount = 15, draggingApp = null, grabX = 0, grabY = 0;
+        const desktopEl = document.getElementById('desktop');
+        const windowContainerEl = document.getElementById('windowcontainer');
+        const menuEl = document.getElementById('menu');
+        const taskbarLeftEl = document.getElementById('taskbarleft');
+        appConfigs.forEach(app => {
+            const icon = document.createElement('div');
+            icon.className = 'icon';
+            icon.dataset.app = app.id;
+            icon.innerHTML = `<span style="font-size: 28px;">${app.icon}</span><span>${app.label}</span>`;
+            desktopEl.appendChild(icon);
+
+            const menuItem = document.createElement('div');
+            menuItem.className = 'menuitem';
+            menuItem.dataset.app = app.id;
+            menuItem.textContent = app.label;
+            menuEl.appendChild(menuItem);
+
+            const tabBtn = document.createElement('button');
+            tabBtn.className = 'taskbtn';
+            tabBtn.id = 'tab' + app.id;
+            tabBtn.dataset.app = app.id;
+            tabBtn.textContent = app.label;
+            taskbarLeftEl.appendChild(tabBtn);
+
+            const win = document.createElement('div');
+            win.className = 'window';
+            win.id = app.id;
+            win.style.left = app.x + 'px';
+            win.style.top = app.y + 'px';
+            win.style.width = app.w + 'px';
+            win.innerHTML = `
+                <div class="titlebar">
+                    <span>[ ${app.title} ]</span>
+                    <div class="titlecontrols">
+                        <button class="titlebtn btnmin" data-app="${app.id}">_</button>
+                        <button class="titlebtn btnclose" data-app="${app.id}">X</button>
+                    </div>
+                </div>
+                <div class="content">${app.body}</div>
+            `;
+            windowContainerEl.appendChild(win);
+
+            if (app.autoOpen) launchApp(app.id);
+        });
+
+        function focusApp(win) {
+            win.style.zIndex = ++layerCount;
+            document.querySelectorAll('.taskbarleft .taskbtn').forEach(b => {
+                if (b.id !== 'menubtn') b.classList.remove('active');
+            });
+            const tab = document.getElementById('tab' + win.id);
+            if (tab) tab.classList.add('active');
+        }
+
+        function launchApp(id) {
+            const w = document.getElementById(id);
+            if (!w) return;
+            w.style.display = 'flex';
+            focusApp(w);
+            const tab = document.getElementById('tab' + id);
+            if (tab) tab.style.display = 'inline-block';
+        }
+
+        function shutApp(id) {
+            const w = document.getElementById(id);
+            if (w) w.style.display = 'none';
+            const tab = document.getElementById('tab' + id);
+            if (tab) { tab.style.display = 'none'; tab.classList.remove('active'); }
+        }
+
+        function hideApp(id) {
+            const w = document.getElementById(id);
+            if (w) w.style.display = 'none';
+            const tab = document.getElementById('tab' + id);
+            if (tab) tab.classList.remove('active');
+        }
+
+        function switchApp(id) {
+            const w = document.getElementById(id);
+            if (!w) return;
+            if (w.style.display === 'none') launchApp(id);
+            else if (document.getElementById('tab' + id).classList.contains('active')) hideApp(id);
+            else focusApp(w);
+        }
+
+        document.addEventListener('click', e => {
+            const icon = e.target.closest('.icon');
+            if (icon) return launchApp(icon.dataset.app);
+
+            const menuItem = e.target.closest('.menuitem');
+            if (menuItem) {
+                launchApp(menuItem.dataset.app);
+                menuEl.classList.remove('show');
+                return;
+            }
+
+            const tabBtn = e.target.closest('.taskbarleft .taskbtn');
+            if (tabBtn) {
+                if (tabBtn.id === 'menubtn') menuEl.classList.toggle('show');
+                else switchApp(tabBtn.dataset.app);
+                return;
+            }
+
+            const minBtn = e.target.closest('.btnmin');
+            if (minBtn) return hideApp(minBtn.dataset.app);
+
+            const closeBtn = e.target.closest('.btnclose');
+            if (closeBtn) return shutApp(closeBtn.dataset.app);
+
+            const actionItem = e.target.closest('[data-action]');
+            if (actionItem) {
+                if (actionItem.dataset.action === 'alert') alert(actionItem.dataset.msg);
+                if (actionItem.dataset.action === 'launch') launchApp(actionItem.dataset.target);
+                return;
+            }
+
+            if (!menuEl.contains(e.target) && e.target.id !== 'menubtn') {
+                menuEl.classList.remove('show');
+            }
+        });
+
+        document.querySelectorAll('.window').forEach(win => {
+            win.addEventListener('mousedown', () => focusApp(win));
+            const bar = win.querySelector('.titlebar');
+            bar.addEventListener('mousedown', e => {
+                if (e.target.tagName === 'BUTTON') return;
+                draggingApp = win;
+                grabX = e.clientX - win.offsetLeft;
+                grabY = e.clientY - win.offsetTop;
+                focusApp(win);
+            });
+        });
+
+        document.addEventListener('mousemove', e => {
+            if (!draggingApp) return;
+            let x = e.clientX - grabX, y = e.clientY - grabY;
+            draggingApp.style.left = x + 'px';
+            draggingApp.style.top = (y < 0 ? 0 : y) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => draggingApp = null);
+
+        function refreshClock() {
+            document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(refreshClock, 1000);
+        refreshClock();
+    </script>
 </body>
 
 </html>
