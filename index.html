@@ -32,6 +32,9 @@
             left: 20px;
             display: flex;
             flex-direction: column;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            max-height: calc(100vh - 70px);
             gap: 16px;
         }
 
@@ -45,16 +48,12 @@
             cursor: pointer;
             text-align: center;
             gap: 6px;
+            font-size: 13px;
         }
 
         .icon:hover {
-            border: 1px solid greenyellow;
+            border-color: greenyellow;
             background: rgba(173, 255, 47, 0.08);
-        }
-
-        .icon span {
-            font-size: 13px;
-            color: greenyellow;
         }
 
         .window {
@@ -62,7 +61,7 @@
             background: #0e121d;
             border: 2px solid greenyellow;
             box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.85);
-            min-width: 320px;
+            min-width: 300px;
             display: none;
             flex-direction: column;
         }
@@ -80,11 +79,6 @@
 
         .titlebar:active {
             cursor: grabbing;
-        }
-
-        .titlecontrols {
-            display: flex;
-            gap: 4px;
         }
 
         .titlebtn {
@@ -183,7 +177,6 @@
             padding: 8px 12px;
             cursor: pointer;
             font-size: 14px;
-            color: greenyellow;
             border-bottom: 1px solid #1e293b;
         }
 
@@ -236,7 +229,6 @@
 
         .clock {
             font-size: 16px;
-            color: greenyellow;
             cursor: pointer;
         }
 
@@ -283,143 +275,169 @@
 </head>
 
 <body>
-    <div class="desktop" id="desktop"></div>
-    <div id="windowcontainer"></div>
-    <div class="menu" id="menu"></div>
+    <div class="desktop">
+        <div class="icon" onclick="launchApp('welcome')"><span style="font-size: 28px;">💻</span><span>welcome</span></div>
+        <div class="icon" onclick="launchApp('notes')"><span style="font-size: 28px;">📝</span><span>notepad</span></div>
+        <div class="icon" onclick="launchApp('files')"><span style="font-size: 28px;">📁</span><span>files</span></div>
+        <div class="icon" onclick="launchApp('about')"><span style="font-size: 28px;">ℹ️</span><span>about</span></div>
+        <div class="icon" onclick="launchApp('clockapp')"><span style="font-size: 28px;">⏰</span><span>clock</span></div>
+        <div class="icon" onclick="launchApp('calc')"><span style="font-size: 28px;">🧮</span><span>calc</span></div>
+        <div class="icon" onclick="launchApp('weather')"><span style="font-size: 28px;">☁️</span><span>weather</span></div>
+    </div>
+
+    <div class="window" id="welcome" style="top: 50px; left: 130px; width: 380px; display: flex;">
+        <div class="titlebar">
+            <span>[ welcome ]</span>
+            <div>
+                <button class="titlebtn btnmin" onclick="hideApp('welcome')">_</button>
+                <button class="titlebtn btnclose" onclick="shutApp('welcome')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <h3>pahalos</h3>
+            <p>browser based os built with pure html css and js.</p>
+            <p>use it in full screen mode for better experience :)</p>
+        </div>
+    </div>
+
+    <div class="window" id="notes" style="top: 120px; left: 540px; width: 350px;">
+        <div class="titlebar">
+            <span>[ scratchpad ]</span>
+            <div>
+                <button class="titlebtn btnmin" onclick="hideApp('notes')">_</button>
+                <button class="titlebtn btnclose" onclick="shutApp('notes')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <textarea class="notepad" placeholder="type something here. try to reload the page, it stores stuff in localstorage :P"></textarea>
+        </div>
+    </div>
+
+    <div class="window" id="files" style="top: 200px; left: 240px; width: 400px;">
+        <div class="titlebar">
+            <span>[ my files ]</span>
+            <div>
+                <button class="titlebtn btnmin" onclick="hideApp('files')">_</button>
+                <button class="titlebtn btnclose" onclick="shutApp('files')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p style="color: #94a3b8; margin-bottom: 8px;">directory: /home/pahal</p>
+            <div class="filegrid">
+                <div class="fileitem" onclick="alert('project: filepeek')"><span>📂</span><span>projects</span></div>
+                <div class="fileitem" onclick="alert('study notes and drafts')"><span>📂</span><span>study</span></div>
+                <div class="fileitem" onclick="launchApp('notes')"><span>📄</span><span>todo.txt</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="window" id="about" style="top: 170px; left: 400px; width: 330px;">
+        <div class="titlebar">
+            <span>[ about pahalos ]</span>
+            <div>
+                <button class="titlebtn btnmin" onclick="hideApp('about')">_</button>
+                <button class="titlebtn btnclose" onclick="shutApp('about')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <h3>pahalos v1.0</h3>
+            <p>created by: pahal</p>
+            <p>stack: vanilla html, css, js</p>
+            <p>status: operational</p>
+        </div>
+    </div>
+
+    <div class="window" id="clockapp" style="top: 150px; left: 340px; width: 300px;">
+        <div class="titlebar">
+            <span>[ clock ]</span>
+            <div>
+                <button class="titlebtn btnmin" onclick="hideApp('clockapp')">_</button>
+                <button class="titlebtn btnclose" onclick="shutApp('clockapp')">X</button>
+            </div>
+        </div>
+        <div class="content" style="text-align: center; padding: 14px 0;">
+            <div id="bigclock" style="font-size: 32px; color: greenyellow; margin-bottom: 6px;">00:00:00</div>
+            <div id="bigdate" style="font-size: 14px; color: #94a3b8;">date</div>
+        </div>
+    </div>
+
+    <div class="window" id="calc" style="top: 140px; left: 480px; width: 260px;">
+        <div class="titlebar">
+            <span>[ calculator ]</span>
+            <div>
+                <button class="titlebtn btnmin" onclick="hideApp('calc')">_</button>
+                <button class="titlebtn btnclose" onclick="shutApp('calc')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <input type="text" id="calcdisplay" class="calcdisplay" readonly value="0">
+            <div class="calcgrid">
+                <button class="calcbtn" onclick="calcPress('c')">C</button>
+                <button class="calcbtn" onclick="calcPress('/')">/</button>
+                <button class="calcbtn" onclick="calcPress('*')">*</button>
+                <button class="calcbtn" onclick="calcPress('-')">-</button>
+                <button class="calcbtn" onclick="calcPress('7')">7</button>
+                <button class="calcbtn" onclick="calcPress('8')">8</button>
+                <button class="calcbtn" onclick="calcPress('9')">9</button>
+                <button class="calcbtn" onclick="calcPress('+')">+</button>
+                <button class="calcbtn" onclick="calcPress('4')">4</button>
+                <button class="calcbtn" onclick="calcPress('5')">5</button>
+                <button class="calcbtn" onclick="calcPress('6')">6</button>
+                <button class="calcbtn" onclick="calcPress('=')" style="grid-row: span 2; background: rgba(173,255,47,0.15); border-color: greenyellow;">=</button>
+                <button class="calcbtn" onclick="calcPress('1')">1</button>
+                <button class="calcbtn" onclick="calcPress('2')">2</button>
+                <button class="calcbtn" onclick="calcPress('3')">3</button>
+                <button class="calcbtn" onclick="calcPress('0')" style="grid-column: span 2;">0</button>
+                <button class="calcbtn" onclick="calcPress('.')">.</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="window" id="weather" style="top: 140px; left: 200px; width: 320px;">
+        <div class="titlebar">
+            <span>[ weather ]</span>
+            <div>
+                <button class="titlebtn btnmin" onclick="hideApp('weather')">_</button>
+                <button class="titlebtn btnclose" onclick="shutApp('weather')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+                <input type="text" id="weathercity" placeholder="enter city..." style="flex: 1; background: #06080d; border: 1px solid #334155; color: greenyellow; font-family: Pixelbasel; padding: 6px; outline: none;">
+                <button onclick="getWeather()" style="background: greenyellow; color: #080a10; border: none; font-family: Pixelbasel; padding: 6px 12px; cursor: pointer;">get</button>
+            </div>
+            <div id="weatherresult" style="text-align: center; padding: 8px 0; font-size: 14px; color: #94a3b8;">
+                enter city to check weather
+            </div>
+        </div>
+    </div>
+
+    <div class="menu" id="menu">
+        <div class="menuitem" onclick="launchApp('welcome'); toggleMenu();">welcome</div>
+        <div class="menuitem" onclick="launchApp('notes'); toggleMenu();">notepad</div>
+        <div class="menuitem" onclick="launchApp('files'); toggleMenu();">my files</div>
+        <div class="menuitem" onclick="launchApp('about'); toggleMenu();">about</div>
+        <div class="menuitem" onclick="launchApp('clockapp'); toggleMenu();">clock</div>
+        <div class="menuitem" onclick="launchApp('calc'); toggleMenu();">calculator</div>
+        <div class="menuitem" onclick="launchApp('weather'); toggleMenu();">weather</div>
+    </div>
 
     <div class="taskbar">
-        <div class="taskbarleft" id="taskbarleft">
-            <button class="taskbtn" id="menubtn">menu</button>
+        <div class="taskbarleft">
+            <button class="taskbtn" id="menubtn" onclick="toggleMenu()">menu</button>
+            <button class="taskbtn active" id="tabwelcome" onclick="switchApp('welcome')" style="display: inline-block;">welcome</button>
+            <button class="taskbtn" id="tabnotes" onclick="switchApp('notes')">notepad</button>
+            <button class="taskbtn" id="tabfiles" onclick="switchApp('files')">files</button>
+            <button class="taskbtn" id="tababout" onclick="switchApp('about')">about</button>
+            <button class="taskbtn" id="tabclockapp" onclick="switchApp('clockapp')">clock</button>
+            <button class="taskbtn" id="tabcalc" onclick="switchApp('calc')">calc</button>
+            <button class="taskbtn" id="tabweather" onclick="switchApp('weather')">weather</button>
         </div>
-        <div class="clock" id="clock">00:00:00</div>
+        <div class="clock" id="clock" onclick="launchApp('clockapp')">00:00:00</div>
     </div>
 
     <script>
-        const appConfigs = [
-            {
-                id: 'welcome',
-                title: 'welcome',
-                label: 'welcome',
-                icon: '💻',  //dont say its ai just coz of these emojis. i had a bad time trying to use images as icons. so these were the only option. and it took a lot of time to find 'em
-                x: 130, y: 50, w: 380,
-                autoOpen: true,
-                body: `<h3>pahalos</h3><p>browser based os built with pure html css and js.</p><p>use it in full screen mode for better experience :)</p>`
-            },
-            {
-                id: 'notes',
-                title: 'scratchpad',
-                label: 'notepad',
-                icon: '📝',
-                x: 540, y: 120, w: 350,
-                body: `<textarea class="notepad" placeholder="type quick notes here..."></textarea>`
-            },
-            {
-                id: 'files',
-                title: 'my files',
-                label: 'files',
-                icon: '📁',
-                x: 240, y: 200, w: 400,
-                body: `<p style="color: #94a3b8; margin-bottom: 8px;">directory: /home/pahal</p><div class="filegrid">
-                    <div class="fileitem" data-action="alert" data-msg="project: filepeek"><span>📂</span><span>projects</span></div>
-                    <div class="fileitem" data-action="alert" data-msg="study notes and drafts"><span>📂</span><span>study</span></div>
-                    <div class="fileitem" data-action="launch" data-target="notes"><span>📄</span><span>todo.txt</span></div>
-                </div>`
-            },
-            {
-                id: 'about',
-                title: 'about pahalos',
-                label: 'about',
-                icon: 'ℹ️',
-                x: 400, y: 170, w: 330,
-                body: `<h3>pahalos v1.0</h3><p>created by: pahal</p><p>stack: vanilla html, css, js</p><p>status: operational</p>`
-            },
-            {
-                id: 'clockapp',
-                title: 'clock',
-                label: 'clock',
-                icon: '⏰',
-                x: 340, y: 150, w: 300,
-                body: `<div style="text-align: center; padding: 14px 0;">
-                    <div id="bigclock" style="font-size: 32px; color: greenyellow; margin-bottom: 6px;">00:00:00</div>
-                    <div id="bigdate" style="font-size: 14px; color: #94a3b8;">date</div>
-                </div>`
-            },
-            {
-                id: 'calc',
-                title: 'calculator',
-                label: 'calc',
-                icon: '🧮',
-                x: 480, y: 140, w: 260,
-                body: `<div>
-                    <input type="text" id="calcdisplay" class="calcdisplay" readonly value="0">
-                    <div class="calcgrid">
-                        <button class="calcbtn" data-calc="c">C</button>
-                        <button class="calcbtn" data-calc="/">/</button>
-                        <button class="calcbtn" data-calc="*">*</button>
-                        <button class="calcbtn" data-calc="-">-</button>
-                        <button class="calcbtn" data-calc="7">7</button>
-                        <button class="calcbtn" data-calc="8">8</button>
-                        <button class="calcbtn" data-calc="9">9</button>
-                        <button class="calcbtn" data-calc="+">+</button>
-                        <button class="calcbtn" data-calc="4">4</button>
-                        <button class="calcbtn" data-calc="5">5</button>
-                        <button class="calcbtn" data-calc="6">6</button>
-                        <button class="calcbtn" data-calc="=" style="grid-row: span 2; background: rgba(173,255,47,0.15); border-color: greenyellow;">=</button>
-                        <button class="calcbtn" data-calc="1">1</button>
-                        <button class="calcbtn" data-calc="2">2</button>
-                        <button class="calcbtn" data-calc="3">3</button>
-                        <button class="calcbtn" data-calc="0" style="grid-column: span 2;">0</button>
-                        <button class="calcbtn" data-calc=".">.</button>
-                    </div>
-                </div>`
-            }
-        ];
-
         let layerCount = 15, draggingApp = null, grabX = 0, grabY = 0;
-        const desktopEl = document.getElementById('desktop');
-        const windowContainerEl = document.getElementById('windowcontainer');
-        const menuEl = document.getElementById('menu');
-        const taskbarLeftEl = document.getElementById('taskbarleft');
-        appConfigs.forEach(app => {
-            const icon = document.createElement('div');
-            icon.className = 'icon';
-            icon.dataset.app = app.id;
-            icon.innerHTML = `<span style="font-size: 28px;">${app.icon}</span><span>${app.label}</span>`;
-            desktopEl.appendChild(icon);
-
-            const menuItem = document.createElement('div');
-            menuItem.className = 'menuitem';
-            menuItem.dataset.app = app.id;
-            menuItem.textContent = app.label;
-            menuEl.appendChild(menuItem);
-
-            const tabBtn = document.createElement('button');
-            tabBtn.className = 'taskbtn';
-            tabBtn.id = 'tab' + app.id;
-            tabBtn.dataset.app = app.id;
-            tabBtn.textContent = app.label;
-            taskbarLeftEl.appendChild(tabBtn);
-
-            const win = document.createElement('div');
-            win.className = 'window';
-            win.id = app.id;
-            win.style.left = app.x + 'px';
-            win.style.top = app.y + 'px';
-            win.style.width = app.w + 'px';
-            win.innerHTML = `
-                <div class="titlebar">
-                    <span>[ ${app.title} ]</span>
-                    <div class="titlecontrols">
-                        <button class="titlebtn btnmin" data-app="${app.id}">_</button>
-                        <button class="titlebtn btnclose" data-app="${app.id}">X</button>
-                    </div>
-                </div>
-                <div class="content">${app.body}</div>
-            `;
-            windowContainerEl.appendChild(win);
-
-            if (app.autoOpen) launchApp(app.id);
-        });
 
         function focusApp(win) {
             win.style.zIndex = ++layerCount;
@@ -437,6 +455,8 @@
             focusApp(w);
             const tab = document.getElementById('tab' + id);
             if (tab) tab.style.display = 'inline-block';
+            if (id === 'notes') document.querySelector('.notepad')?.focus();
+            if (id === 'weather') document.getElementById('weathercity')?.focus();
         }
 
         function shutApp(id) {
@@ -461,51 +481,14 @@
             else focusApp(w);
         }
 
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('show');
+        }
+
         document.addEventListener('click', e => {
-            const icon = e.target.closest('.icon');
-            if (icon) return launchApp(icon.dataset.app);
-
-            const menuItem = e.target.closest('.menuitem');
-            if (menuItem) {
-                launchApp(menuItem.dataset.app);
-                menuEl.classList.remove('show');
-                return;
-            }
-
-            const tabBtn = e.target.closest('.taskbarleft .taskbtn');
-            if (tabBtn) {
-                if (tabBtn.id === 'menubtn') menuEl.classList.toggle('show');
-                else switchApp(tabBtn.dataset.app);
-                return;
-            }
-
-            const minBtn = e.target.closest('.btnmin');
-            if (minBtn) return hideApp(minBtn.dataset.app);
-
-            const closeBtn = e.target.closest('.btnclose');
-            if (closeBtn) return shutApp(closeBtn.dataset.app);
-
-            const actionItem = e.target.closest('[data-action]');
-            if (actionItem) {
-                if (actionItem.dataset.action === 'alert') alert(actionItem.dataset.msg);
-                if (actionItem.dataset.action === 'launch') launchApp(actionItem.dataset.target);
-                return;
-            }
-
-            const calcBtn = e.target.closest('[data-calc]');
-            if (calcBtn) {
-                const key = calcBtn.dataset.calc;
-                const screen = document.getElementById('calcdisplay');
-                if (key === 'c') screen.value = '0';
-                else if (key === '=') screen.value = eval(screen.value);
-                else screen.value = (screen.value === '0') ? key : screen.value + key;
-                return;
-            }
-
-            if (e.target.id === 'clock') return launchApp('clockapp');
-
-            if (!menuEl.contains(e.target) && e.target.id !== 'menubtn') {
-                menuEl.classList.remove('show');
+            const menu = document.getElementById('menu');
+            if (!menu.contains(e.target) && e.target.id !== 'menubtn') {
+                menu.classList.remove('show');
             }
         });
 
@@ -523,12 +506,18 @@
 
         document.addEventListener('mousemove', e => {
             if (!draggingApp) return;
-            let x = e.clientX - grabX, y = e.clientY - grabY;
-            draggingApp.style.left = x + 'px';
-            draggingApp.style.top = (y < 0 ? 0 : y) + 'px';
+            draggingApp.style.left = (e.clientX - grabX) + 'px';
+            draggingApp.style.top = Math.max(0, e.clientY - grabY) + 'px';
         });
 
         document.addEventListener('mouseup', () => draggingApp = null);
+
+        function calcPress(key) {
+            const screen = document.getElementById('calcdisplay');
+            if (key === 'c') screen.value = '0';
+            else if (key === '=') screen.value = eval(screen.value);
+            else screen.value = (screen.value === '0') ? key : screen.value + key;
+        }
 
         function refreshClock() {
             const now = new Date();
@@ -541,6 +530,52 @@
         }
         setInterval(refreshClock, 1000);
         refreshClock();
+
+        async function getWeather() {
+            const input = document.getElementById('weathercity');
+            const resEl = document.getElementById('weatherresult');
+            const city = input.value.trim();
+            if (!city) return;
+
+            resEl.textContent = 'loading...';
+            try {
+                const geoRes = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=1');
+                const geoData = await geoRes.json();
+                if (!geoData.results || !geoData.results.length) {
+                    resEl.textContent = 'city not found';
+                    return;
+                }
+
+                const { latitude, longitude, name, country } = geoData.results[0];
+                const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + latitude + '&longitude=' + longitude + '&current_weather=true');
+                const weatherData = await weatherRes.json();
+                resEl.innerHTML = '<div style="font-size: 16px; color: #fff; margin-bottom: 4px;">' + name + (country ? ', ' + country : '') + '</div><div style="font-size: 28px; color: greenyellow;">' + weatherData.current_weather.temperature + '°C</div>';
+                localStorage.setItem('pahalos_city', city);
+            } catch (err) {
+                resEl.textContent = 'error fetching weather';
+            }
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'weathercity') {
+                getWeather();
+            }
+        });
+
+        const notepadEl = document.querySelector('.notepad');
+        const savedNote = localStorage.getItem('pahalos_note');
+        if (savedNote && notepadEl) notepadEl.value = savedNote;
+        if (notepadEl) {
+            notepadEl.addEventListener('input', () => {
+                localStorage.setItem('pahalos_note', notepadEl.value);
+            });
+        }
+
+        const savedCity = localStorage.getItem('pahalos_city');
+        if (savedCity) {
+            const cityInput = document.getElementById('weathercity');
+            if (cityInput) cityInput.value = savedCity;
+        }
     </script>
 </body>
 

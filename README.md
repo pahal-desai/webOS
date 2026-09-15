@@ -6,6 +6,5 @@ it is a working os that is made completely on html, css and javascript
 - drag windows
 - a notepad
 - a calculator
-- a small snake game
 - a clock
 - a weather app
