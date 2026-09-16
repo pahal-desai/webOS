@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
 
 <head>
     <title>PahalOS</title>
+
     <style>
         @font-face {
             font-family: Pixelbasel;
@@ -16,14 +18,14 @@
         }
 
         body {
-            background-color: #080a10;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #080a10;
             background-image: radial-gradient(#1c2333 1px, transparent 1px);
             background-size: 24px 24px;
-            overflow: hidden;
-            font-family: Pixelbasel, monospace, sans-serif;
             color: greenyellow;
-            height: 100vh;
-            width: 100vw;
+            font-family: Pixelbasel, monospace, sans-serif;
         }
 
         .desktop {
@@ -34,317 +36,497 @@
             flex-direction: column;
             flex-wrap: wrap;
             align-content: flex-start;
-            max-height: calc(100vh - 70px);
             gap: 16px;
+            max-height: calc(100vh - 70px);
         }
 
         .icon {
+            width: 80px;
+            padding: 8px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 80px;
-            padding: 8px 4px;
-            border: 1px solid transparent;
-            cursor: pointer;
-            text-align: center;
             gap: 6px;
-            font-size: 13px;
+            border: 1px solid transparent;
+            text-align: center;
+            cursor: pointer;
         }
 
         .icon:hover {
             border-color: greenyellow;
-            background: rgba(173, 255, 47, 0.08);
+            background: rgba(173, 255, 47, .08);
         }
 
-        .window {
+        .icon span {
+            font-size: 28px;
+        }
+
+        .icon p {
+            font-size: 13px;
+        }
+
+        .win {
             position: absolute;
-            background: #0e121d;
-            border: 2px solid greenyellow;
-            box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.85);
-            min-width: 300px;
             display: none;
             flex-direction: column;
+            min-width: 300px;
+            background: #0e121d;
+            border: 2px solid greenyellow;
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, .85);
         }
 
-        .titlebar {
+        #welcome {
+            top: 50px;
+            left: 130px;
+            width: 380px;
+            display: flex;
+        }
+
+        #notes {
+            top: 120px;
+            left: 540px;
+            width: 350px;
+        }
+
+        #files {
+            top: 200px;
+            left: 240px;
+            width: 400px;
+        }
+
+        #about {
+            top: 170px;
+            left: 400px;
+            width: 330px;
+        }
+
+        #clockapp {
+            top: 150px;
+            left: 340px;
+            width: 300px;
+        }
+
+        #calc {
+            top: 140px;
+            left: 480px;
+            width: 260px;
+        }
+
+        #weather {
+            top: 140px;
+            left: 200px;
+            width: 320px;
+        }
+
+        .tbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
             background: greenyellow;
             color: #080a10;
-            padding: 6px 10px;
             font-size: 16px;
             cursor: grab;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .titlebar:active {
+        .tbar:active {
             cursor: grabbing;
         }
 
-        .titlebtn {
+        .acts {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn {
+            padding: 1px 7px;
             border: 1px solid #080a10;
             font-family: Pixelbasel;
             font-size: 13px;
-            padding: 1px 7px;
             cursor: pointer;
         }
 
-        .btnmin {
+        .min {
             background: #facc15;
             color: #000;
         }
 
-        .btnclose {
+        .cls {
             background: #ff3344;
             color: #fff;
         }
 
-        .content {
+        .cont {
             padding: 14px;
-            font-size: 15px;
-            line-height: 1.4;
-            color: #e2e8f0;
             max-height: 360px;
             overflow-y: auto;
+            color: #e2e8f0;
+            font-size: 15px;
+            line-height: 1.4;
         }
 
-        .content h3 {
+        .cont h3 {
+            margin-bottom: 8px;
             color: greenyellow;
-            font-size: 20px;
+        }
+
+        .cont p {
             margin-bottom: 8px;
         }
 
-        .content p {
-            margin-bottom: 8px;
-        }
-
-        .notepad {
+        .note {
             width: 100%;
-            height: 140px;
+            height: 160px;
+            display: block;
+            padding: 12px;
+            resize: none;
+            outline: none;
+            border: 0;
             background: #06080d;
-            border: 1px solid #334155;
             color: greenyellow;
             font-family: Pixelbasel;
             font-size: 15px;
-            padding: 8px;
-            resize: none;
-            outline: none;
         }
 
-        .filegrid {
+        .fpath {
+            padding: 12px 14px 4px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
-            margin-top: 6px;
+            padding: 10px 14px 14px;
         }
 
-        .fileitem {
-            border: 1px solid #334155;
-            padding: 10px 6px;
+        .fi {
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer;
             gap: 6px;
-            font-size: 13px;
+            padding: 10px 6px;
+            border: 1px solid #334155;
             color: #e2e8f0;
+            font-size: 13px;
+            cursor: pointer;
         }
 
-        .fileitem:hover {
+        .fi:hover {
             border-color: greenyellow;
-            background: rgba(173, 255, 47, 0.08);
+            background: rgba(173, 255, 47, .08);
             color: greenyellow;
+        }
+
+        .cbox {
+            padding: 18px 0;
+            text-align: center;
+        }
+
+        #bclk {
+            margin-bottom: 6px;
+            color: greenyellow;
+            font-size: 32px;
+        }
+
+        #bdt {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .cbody {
+            padding: 12px;
+        }
+
+        .cscr {
+            width: 100%;
+            height: 38px;
+            margin-bottom: 8px;
+            padding: 4px 8px;
+            outline: none;
+            border: 1px solid #334155;
+            background: #06080d;
+            color: greenyellow;
+            font-family: Pixelbasel, monospace;
+            font-size: 20px;
+            text-align: right;
+        }
+
+        .cgrid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .cbtn {
+            padding: 9px 0;
+            border: 1px solid #334155;
+            background: #0d111a;
+            color: greenyellow;
+            font-family: Pixelbasel, monospace;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .cbtn:hover {
+            border-color: greenyellow;
+            background: rgba(173, 255, 47, .1);
+        }
+
+        .cbtn:active {
+            background: greenyellow;
+            color: #080a10;
+        }
+
+        .ceq {
+            grid-row: span 2;
+            border-color: greenyellow;
+            background: rgba(173, 255, 47, .15);
+        }
+
+        .czero {
+            grid-column: span 2;
+        }
+
+        .wbody {
+            padding: 14px;
+        }
+
+        .wbar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .winp {
+            flex: 1;
+            padding: 6px;
+            outline: none;
+            border: 1px solid #334155;
+            background: #06080d;
+            color: greenyellow;
+            font-family: Pixelbasel;
+        }
+
+        .wbtn {
+            padding: 6px 12px;
+            border: 0;
+            background: greenyellow;
+            color: #080a10;
+            font-family: Pixelbasel;
+            cursor: pointer;
+        }
+
+        .wres {
+            padding: 8px 0;
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .wcityname {
+            margin-bottom: 4px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .wtemp {
+            color: greenyellow;
+            font-size: 28px;
         }
 
         .menu {
             position: absolute;
-            bottom: 44px;
             left: 0;
+            bottom: 44px;
+            z-index: 999999;
+            display: none;
+            flex-direction: column;
             width: 200px;
             background: #0e121d;
             border: 2px solid greenyellow;
-            box-shadow: 4px -4px 0px rgba(0, 0, 0, 0.8);
-            display: none;
-            flex-direction: column;
-            z-index: 999999;
+            box-shadow: 4px -4px 0 rgba(0, 0, 0, .8);
         }
 
         .menu.show {
             display: flex;
         }
 
-        .menuitem {
+        .mi {
             padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
             border-bottom: 1px solid #1e293b;
+            font-size: 14px;
+            cursor: pointer;
         }
 
-        .menuitem:hover {
+        .mi:hover {
             background: greenyellow;
             color: #080a10;
         }
 
         .taskbar {
             position: absolute;
-            bottom: 0;
             left: 0;
+            bottom: 0;
+            z-index: 99999;
             width: 100%;
             height: 42px;
-            background: #0d111a;
-            border-top: 2px solid greenyellow;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 10px;
-            z-index: 99999;
+            background: #0d111a;
+            border-top: 2px solid greenyellow;
         }
 
-        .taskbarleft {
+        .tbl {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .taskbtn {
+        .tbtn {
+            display: none;
+            padding: 5px 12px;
+            border: 1px solid greenyellow;
             background: transparent;
             color: greenyellow;
-            border: 1px solid greenyellow;
             font-family: Pixelbasel;
             font-size: 14px;
-            padding: 5px 12px;
             cursor: pointer;
-            display: none;
         }
 
-        .taskbtn:hover,
-        .taskbtn.active {
-            background: greenyellow;
-            color: #080a10;
-        }
-
-        #menubtn {
+        #mbtn,
+        #twelcome {
             display: inline-block;
         }
 
-        .clock {
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .calcdisplay {
-            width: 100%;
-            height: 38px;
-            background: #06080d;
-            border: 1px solid #334155;
-            color: greenyellow;
-            font-family: Pixelbasel, monospace;
-            font-size: 20px;
-            text-align: right;
-            padding: 4px 8px;
-            margin-bottom: 8px;
-            outline: none;
-        }
-
-        .calcgrid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-        }
-
-        .calcbtn {
-            background: #0d111a;
-            color: greenyellow;
-            border: 1px solid #334155;
-            font-family: Pixelbasel, monospace;
-            font-size: 16px;
-            padding: 9px 0;
-            cursor: pointer;
-        }
-
-        .calcbtn:hover {
-            border-color: greenyellow;
-            background: rgba(173, 255, 47, 0.1);
-        }
-
-        .calcbtn:active {
+        .tbtn:hover,
+        .tbtn.active {
             background: greenyellow;
             color: #080a10;
+        }
+
+        .clk {
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
+
     <div class="desktop">
-        <div class="icon" onclick="launchApp('welcome')"><span style="font-size: 28px;">💻</span><span>welcome</span>
+        <div class="icon" onclick="openApp('welcome')">
+            <span>💻</span>
+            <p>welcome</p>
         </div>
-        <div class="icon" onclick="launchApp('notes')"><span style="font-size: 28px;">📝</span><span>notepad</span>
+
+        <div class="icon" onclick="openApp('notes')">
+            <span>📝</span>
+            <p>notepad</p>
         </div>
-        <div class="icon" onclick="launchApp('files')"><span style="font-size: 28px;">📁</span><span>files</span></div>
-        <div class="icon" onclick="launchApp('about')"><span style="font-size: 28px;">ℹ️</span><span>about</span></div>
-        <div class="icon" onclick="launchApp('clockapp')"><span style="font-size: 28px;">⏰</span><span>clock</span>
+
+        <div class="icon" onclick="openApp('files')">
+            <span>📁</span>
+            <p>files</p>
         </div>
-        <div class="icon" onclick="launchApp('calc')"><span style="font-size: 28px;">🧮</span><span>calc</span></div>
-        <div class="icon" onclick="launchApp('weather')"><span style="font-size: 28px;">☁️</span><span>weather</span>
+
+        <div class="icon" onclick="openApp('about')">
+            <span>ℹ️</span>
+            <p>about</p>
+        </div>
+
+        <div class="icon" onclick="openApp('clockapp')">
+            <span>⏰</span>
+            <p>clock</p>
+        </div>
+
+        <div class="icon" onclick="openApp('calc')">
+            <span>🧮</span>
+            <p>calc</p>
+        </div>
+
+        <div class="icon" onclick="openApp('weather')">
+            <span>☁️</span>
+            <p>weather</p>
         </div>
     </div>
 
-    <div class="window" id="welcome" style="top: 50px; left: 130px; width: 380px; display: flex;">
-        <div class="titlebar">
-            <span>[ welcome ]</span>
-            <div>
-                <button class="titlebtn btnmin" onclick="hideApp('welcome')">_</button>
-                <button class="titlebtn btnclose" onclick="shutApp('welcome')">X</button>
+
+    <div class="win" id="welcome">
+        <div class="tbar">
+            <span>welcome</span>
+            <div class="acts">
+                <button class="btn min">_</button>
+                <button class="btn cls">X</button>
             </div>
         </div>
-        <div class="content">
+
+        <div class="cont">
             <h3>pahalos</h3>
             <p>browser based os built with pure html css and js.</p>
             <p>use it in full screen mode for better experience :)</p>
         </div>
     </div>
 
-    <div class="window" id="notes" style="top: 120px; left: 540px; width: 350px;">
-        <div class="titlebar">
-            <span>[ scratchpad ]</span>
-            <div>
-                <button class="titlebtn btnmin" onclick="hideApp('notes')">_</button>
-                <button class="titlebtn btnclose" onclick="shutApp('notes')">X</button>
+
+    <div class="win" id="notes">
+        <div class="tbar">
+            <span>scratchpad</span>
+            <div class="acts">
+                <button class="btn min">_</button>
+                <button class="btn cls">X</button>
             </div>
         </div>
-        <div class="content">
-            <textarea class="notepad"
-                placeholder="type something here. try to reload the page, it stores stuff in localstorage :P"></textarea>
+
+        <textarea class="note" id="notepad"
+            placeholder="type something here. try to reload the page, it stores stuff in localstorage :P"></textarea>
+    </div>
+
+
+    <div class="win" id="files">
+        <div class="tbar">
+            <span>my files</span>
+            <div class="acts">
+                <button class="btn min">_</button>
+                <button class="btn cls">X</button>
+            </div>
+        </div>
+
+        <div class="fpath">directory: /home/pahal</div>
+
+        <div class="grid">
+            <div class="fi" onclick="alert('project: nothing in here')">
+                <!--it took me a while finding these emojis as icons :(-->
+                <span>📂</span>
+                <p>projects</p>
+            </div>
+
+            <div class="fi" onclick="alert('study notes and drafts')">
+                <span>📂</span>
+                <p>study</p>
+            </div>
+
+            <div class="fi" onclick="openApp('notes')">
+                <span>📄</span>
+                <p>todo.txt</p>
+            </div>
         </div>
     </div>
 
-    <div class="window" id="files" style="top: 200px; left: 240px; width: 400px;">
-        <div class="titlebar">
-            <span>[ my files ]</span>
-            <div>
-                <button class="titlebtn btnmin" onclick="hideApp('files')">_</button>
-                <button class="titlebtn btnclose" onclick="shutApp('files')">X</button>
-            </div>
-        </div>
-        <div class="content">
-            <p style="color: #94a3b8; margin-bottom: 8px;">directory: /home/pahal</p>
-            <div class="filegrid">
-                <div class="fileitem" onclick="alert('project: filepeek')"><span>📂</span><span>projects</span></div>
-                <div class="fileitem" onclick="alert('study notes and drafts')"><span>📂</span><span>study</span></div>
-                <div class="fileitem" onclick="launchApp('notes')"><span>📄</span><span>todo.txt</span></div>
-            </div>
-        </div>
-    </div>
 
-    <div class="window" id="about" style="top: 170px; left: 400px; width: 330px;">
-        <div class="titlebar">
-            <span>[ about pahalos ]</span>
-            <div>
-                <button class="titlebtn btnmin" onclick="hideApp('about')">_</button>
-                <button class="titlebtn btnclose" onclick="shutApp('about')">X</button>
+    <div class="win" id="about">
+        <div class="tbar">
+            <span>about pahalos</span>
+            <div class="acts">
+                <button class="btn min">_</button>
+                <button class="btn cls">X</button>
             </div>
         </div>
-        <div class="content">
+
+        <div class="cont">
             <h3>pahalos v1.0</h3>
             <p>created by: pahal</p>
             <p>stack: vanilla html, css, js</p>
@@ -352,240 +534,425 @@
         </div>
     </div>
 
-    <div class="window" id="clockapp" style="top: 150px; left: 340px; width: 300px;">
-        <div class="titlebar">
-            <span>[ clock ]</span>
-            <div>
-                <button class="titlebtn btnmin" onclick="hideApp('clockapp')">_</button>
-                <button class="titlebtn btnclose" onclick="shutApp('clockapp')">X</button>
+
+    <div class="win" id="clockapp">
+        <div class="tbar">
+            <span>clock</span>
+            <div class="acts">
+                <button class="btn min">_</button>
+                <button class="btn cls">X</button>
             </div>
         </div>
-        <div class="content" style="text-align: center; padding: 14px 0;">
-            <div id="bigclock" style="font-size: 32px; color: greenyellow; margin-bottom: 6px;">00:00:00</div>
-            <div id="bigdate" style="font-size: 14px; color: #94a3b8;">date</div>
+
+        <div class="cbox">
+            <div id="bclk">00:00:00</div>
+            <div id="bdt">date</div>
         </div>
     </div>
 
-    <div class="window" id="calc" style="top: 140px; left: 480px; width: 260px;">
-        <div class="titlebar">
-            <span>[ calculator ]</span>
-            <div>
-                <button class="titlebtn btnmin" onclick="hideApp('calc')">_</button>
-                <button class="titlebtn btnclose" onclick="shutApp('calc')">X</button>
+
+    <div class="win" id="calc">
+        <div class="tbar">
+            <span>calculator</span>
+            <div class="acts">
+                <button class="btn min">_</button>
+                <button class="btn cls">X</button>
             </div>
         </div>
-        <div class="content">
-            <input type="text" id="calcdisplay" class="calcdisplay" readonly value="0">
-            <div class="calcgrid">
-                <button class="calcbtn" onclick="calcPress('c')">C</button>
-                <button class="calcbtn" onclick="calcPress('/')">/</button>
-                <button class="calcbtn" onclick="calcPress('*')">*</button>
-                <button class="calcbtn" onclick="calcPress('-')">-</button>
-                <button class="calcbtn" onclick="calcPress('7')">7</button>
-                <button class="calcbtn" onclick="calcPress('8')">8</button>
-                <button class="calcbtn" onclick="calcPress('9')">9</button>
-                <button class="calcbtn" onclick="calcPress('+')">+</button>
-                <button class="calcbtn" onclick="calcPress('4')">4</button>
-                <button class="calcbtn" onclick="calcPress('5')">5</button>
-                <button class="calcbtn" onclick="calcPress('6')">6</button>
-                <button class="calcbtn" onclick="calcPress('=')"
-                    style="grid-row: span 2; background: rgba(173,255,47,0.15); border-color: greenyellow;">=</button>
-                <button class="calcbtn" onclick="calcPress('1')">1</button>
-                <button class="calcbtn" onclick="calcPress('2')">2</button>
-                <button class="calcbtn" onclick="calcPress('3')">3</button>
-                <button class="calcbtn" onclick="calcPress('0')" style="grid-column: span 2;">0</button>
-                <button class="calcbtn" onclick="calcPress('.')">.</button>
+
+        <div class="cbody">
+            <input type="text" id="cscr" class="cscr" readonly value="0">
+
+            <div class="cgrid">
+                <button class="cbtn" onclick="calcKey('c')">C</button>
+                <button class="cbtn" onclick="calcKey('/')">/</button>
+                <button class="cbtn" onclick="calcKey('*')">*</button>
+                <button class="cbtn" onclick="calcKey('-')">-</button>
+
+                <button class="cbtn" onclick="calcKey('7')">7</button>
+                <button class="cbtn" onclick="calcKey('8')">8</button>
+                <button class="cbtn" onclick="calcKey('9')">9</button>
+                <button class="cbtn" onclick="calcKey('+')">+</button>
+
+                <button class="cbtn" onclick="calcKey('4')">4</button>
+                <button class="cbtn" onclick="calcKey('5')">5</button>
+                <button class="cbtn" onclick="calcKey('6')">6</button>
+
+                <button class="cbtn ceq" onclick="calcKey('=')">=</button>
+
+                <button class="cbtn" onclick="calcKey('1')">1</button>
+                <button class="cbtn" onclick="calcKey('2')">2</button>
+                <button class="cbtn" onclick="calcKey('3')">3</button>
+
+                <button class="cbtn czero" onclick="calcKey('0')">0</button>
+                <button class="cbtn" onclick="calcKey('.')">.</button>
             </div>
         </div>
     </div>
 
-    <div class="window" id="weather" style="top: 140px; left: 200px; width: 320px;">
-        <div class="titlebar">
-            <span>[ weather ]</span>
-            <div>
-                <button class="titlebtn btnmin" onclick="hideApp('weather')">_</button>
-                <button class="titlebtn btnclose" onclick="shutApp('weather')">X</button>
+
+    <div class="win" id="weather">
+        <div class="tbar">
+            <span>weather</span>
+            <div class="acts">
+                <button class="btn min">_</button>
+                <button class="btn cls">X</button>
             </div>
         </div>
-        <div class="content">
-            <div style="display: flex; gap: 6px; margin-bottom: 12px;">
-                <input type="text" id="weathercity" placeholder="enter city..."
-                    style="flex: 1; background: #06080d; border: 1px solid #334155; color: greenyellow; font-family: Pixelbasel; padding: 6px; outline: none;">
-                <button onclick="getWeather()"
-                    style="background: greenyellow; color: #080a10; border: none; font-family: Pixelbasel; padding: 6px 12px; cursor: pointer;">get</button>
+
+        <div class="wbody">
+            <div class="wbar">
+                <input type="text" id="wcity" class="winp" placeholder="enter city...">
+
+                <button class="wbtn" onclick="getWeather()">get</button>
             </div>
-            <div id="weatherresult" style="text-align: center; padding: 8px 0; font-size: 14px; color: #94a3b8;">
+
+            <div id="wres" class="wres">
                 enter city to check weather
             </div>
         </div>
     </div>
 
+
     <div class="menu" id="menu">
-        <div class="menuitem" onclick="launchApp('welcome'); toggleMenu();">welcome</div>
-        <div class="menuitem" onclick="launchApp('notes'); toggleMenu();">notepad</div>
-        <div class="menuitem" onclick="launchApp('files'); toggleMenu();">my files</div>
-        <div class="menuitem" onclick="launchApp('about'); toggleMenu();">about</div>
-        <div class="menuitem" onclick="launchApp('clockapp'); toggleMenu();">clock</div>
-        <div class="menuitem" onclick="launchApp('calc'); toggleMenu();">calculator</div>
-        <div class="menuitem" onclick="launchApp('weather'); toggleMenu();">weather</div>
+        <div class="mi" onclick="openApp('welcome'); toggleMenu()">welcome</div>
+        <div class="mi" onclick="openApp('notes'); toggleMenu()">notepad</div>
+        <div class="mi" onclick="openApp('files'); toggleMenu()">my files</div>
+        <div class="mi" onclick="openApp('about'); toggleMenu()">about</div>
+        <div class="mi" onclick="openApp('clockapp'); toggleMenu()">clock</div>
+        <div class="mi" onclick="openApp('calc'); toggleMenu()">calculator</div>
+        <div class="mi" onclick="openApp('weather'); toggleMenu()">weather</div>
     </div>
+
 
     <div class="taskbar">
-        <div class="taskbarleft">
-            <button class="taskbtn" id="menubtn" onclick="toggleMenu()">menu</button>
-            <button class="taskbtn active" id="tabwelcome" onclick="switchApp('welcome')"
-                style="display: inline-block;">welcome</button>
-            <button class="taskbtn" id="tabnotes" onclick="switchApp('notes')">notepad</button>
-            <button class="taskbtn" id="tabfiles" onclick="switchApp('files')">files</button>
-            <button class="taskbtn" id="tababout" onclick="switchApp('about')">about</button>
-            <button class="taskbtn" id="tabclockapp" onclick="switchApp('clockapp')">clock</button>
-            <button class="taskbtn" id="tabcalc" onclick="switchApp('calc')">calc</button>
-            <button class="taskbtn" id="tabweather" onclick="switchApp('weather')">weather</button>
+        <div class="tbl">
+            <button class="tbtn" id="mbtn" onclick="toggleMenu()">menu</button>
+
+            <button class="tbtn active" id="twelcome" onclick="switchApp('welcome')">
+                welcome
+            </button>
+
+            <button class="tbtn" id="tnotes" onclick="switchApp('notes')">
+                notepad
+            </button>
+
+            <button class="tbtn" id="tfiles" onclick="switchApp('files')">
+                files
+            </button>
+
+            <button class="tbtn" id="tabout" onclick="switchApp('about')">
+                about
+            </button>
+
+            <button class="tbtn" id="tclockapp" onclick="switchApp('clockapp')">
+                clock
+            </button>
+
+            <button class="tbtn" id="tcalc" onclick="switchApp('calc')">
+                calc
+            </button>
+
+            <button class="tbtn" id="tweather" onclick="switchApp('weather')">
+                weather
+            </button>
         </div>
-        <div class="clock" id="clock" onclick="launchApp('clockapp')">00:00:00</div>
+
+        <div class="clk" id="clk" onclick="openApp('clockapp')">
+            00:00:00
+        </div>
     </div>
 
+
     <script>
-        let layerCount = 15, draggingApp = null, grabX = 0, grabY = 0;
+        let z = 20;
+        let dragging = null;
+        let dragX = 0;
+        let dragY = 0;
 
-        function focusApp(win) {
-            win.style.zIndex = ++layerCount;
-            document.querySelectorAll('.taskbarleft .taskbtn').forEach(b => {
-                if (b.id !== 'menubtn') b.classList.remove('active');
+        function focusWindow(win) {
+            z++;
+            win.style.zIndex = z;
+
+            document.querySelectorAll(".tbtn").forEach(function (button) {
+                button.classList.remove("active");
             });
-            const tab = document.getElementById('tab' + win.id);
-            if (tab) tab.classList.add('active');
+
+            let taskButton = document.getElementById("t" + win.id);
+
+            if (taskButton) {
+                taskButton.classList.add("active");
+            }
         }
 
-        function launchApp(id) {
-            const w = document.getElementById(id);
-            if (!w) return;
-            w.style.display = 'flex';
-            focusApp(w);
-            const tab = document.getElementById('tab' + id);
-            if (tab) tab.style.display = 'inline-block';
-            if (id === 'notes') document.querySelector('.notepad')?.focus();
-            if (id === 'weather') document.getElementById('weathercity')?.focus();
+        function openApp(id) {
+            let win = document.getElementById(id);
+
+            win.style.display = "flex";
+            focusWindow(win);
+
+            let taskButton = document.getElementById("t" + id);
+
+            if (taskButton) {
+                taskButton.style.display = "inline-block";
+            }
+
+            if (id === "notes") {
+                document.getElementById("notepad").focus();
+            }
+
+            if (id === "weather") {
+                document.getElementById("wcity").focus();
+            }
         }
 
-        function shutApp(id) {
-            const w = document.getElementById(id);
-            if (w) w.style.display = 'none';
-            const tab = document.getElementById('tab' + id);
-            if (tab) { tab.style.display = 'none'; tab.classList.remove('active'); }
+        function closeApp(id) {
+            let win = document.getElementById(id);
+            win.style.display = "none";
+
+            let taskButton = document.getElementById("t" + id);
+
+            if (taskButton) {
+                taskButton.style.display = "none";
+                taskButton.classList.remove("active");
+            }
         }
 
-        function hideApp(id) {
-            const w = document.getElementById(id);
-            if (w) w.style.display = 'none';
-            const tab = document.getElementById('tab' + id);
-            if (tab) tab.classList.remove('active');
+        function minimizeApp(id) {
+            let win = document.getElementById(id);
+            win.style.display = "none";
+
+            let taskButton = document.getElementById("t" + id);
+
+            if (taskButton) {
+                taskButton.classList.remove("active");
+            }
         }
 
         function switchApp(id) {
-            const w = document.getElementById(id);
-            if (!w) return;
-            if (w.style.display === 'none') launchApp(id);
-            else if (document.getElementById('tab' + id).classList.contains('active')) hideApp(id);
-            else focusApp(w);
+            let win = document.getElementById(id);
+            let taskButton = document.getElementById("t" + id);
+
+            if (win.style.display === "none") {
+                openApp(id);
+                return;
+            }
+
+            if (taskButton.classList.contains("active")) {
+                minimizeApp(id);
+            } else {
+                focusWindow(win);
+            }
         }
 
         function toggleMenu() {
-            document.getElementById('menu').classList.toggle('show');
+            document.getElementById("menu").classList.toggle("show");
         }
 
-        document.addEventListener('click', e => {
-            const menu = document.getElementById('menu');
-            if (!menu.contains(e.target) && e.target.id !== 'menubtn') {
-                menu.classList.remove('show');
+        document.addEventListener("click", function (event) {
+            let menu = document.getElementById("menu");
+
+            if (!menu.contains(event.target) && event.target.id !== "mbtn") {
+                menu.classList.remove("show");
             }
         });
 
-        document.querySelectorAll('.window').forEach(win => {
-            win.addEventListener('mousedown', () => focusApp(win));
-            const bar = win.querySelector('.titlebar');
-            bar.addEventListener('mousedown', e => {
-                if (e.target.tagName === 'BUTTON') return;
-                draggingApp = win;
-                grabX = e.clientX - win.offsetLeft;
-                grabY = e.clientY - win.offsetTop;
-                focusApp(win);
+
+        // window dragging
+        document.querySelectorAll(".win").forEach(function (win) {
+            win.addEventListener("mousedown", function () {
+                focusWindow(win);
             });
-        });
 
-        document.addEventListener('mousemove', e => {
-            if (!draggingApp) return;
-            draggingApp.style.left = (e.clientX - grabX) + 'px';
-            draggingApp.style.top = Math.max(0, e.clientY - grabY) + 'px';
-        });
+            let bar = win.querySelector(".tbar");
 
-        document.addEventListener('mouseup', () => draggingApp = null);
-
-        function calcPress(key) {
-            const screen = document.getElementById('calcdisplay');
-            if (key === 'c') screen.value = '0';
-            else if (key === '=') screen.value = eval(screen.value);
-            else screen.value = (screen.value === '0') ? key : screen.value + key;
-        }
-
-        function refreshClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString();
-            const bigClock = document.getElementById('bigclock');
-            if (bigClock) {
-                bigClock.textContent = now.toLocaleTimeString();
-                document.getElementById('bigdate').textContent = now.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-            }
-        }
-        setInterval(refreshClock, 1000);
-        refreshClock();
-
-        async function getWeather() {
-            const input = document.getElementById('weathercity');
-            const resEl = document.getElementById('weatherresult');
-            const city = input.value.trim();
-            if (!city) return;
-
-            resEl.textContent = 'loading...';
-            try {
-                const geoRes = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=1');
-                const geoData = await geoRes.json();
-                if (!geoData.results || !geoData.results.length) {
-                    resEl.textContent = 'city not found';
+            bar.addEventListener("mousedown", function (event) {
+                if (event.target.tagName === "BUTTON") {
                     return;
                 }
 
-                const { latitude, longitude, name, country } = geoData.results[0];
-                const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + latitude + '&longitude=' + longitude + '&current_weather=true');
-                const weatherData = await weatherRes.json();
-                resEl.innerHTML = '<div style="font-size: 16px; color: #fff; margin-bottom: 4px;">' + name + (country ? ', ' + country : '') + '</div><div style="font-size: 28px; color: greenyellow;">' + weatherData.current_weather.temperature + '°C</div>';
-                localStorage.setItem('pahalos_city', city);
-            } catch (err) {
-                resEl.textContent = 'error fetching weather';
+                dragging = win;
+                dragX = event.clientX - win.offsetLeft;
+                dragY = event.clientY - win.offsetTop;
+
+                focusWindow(win);
+            });
+
+            win.querySelector(".min").onclick = function () {
+                minimizeApp(win.id);
+            };
+
+            win.querySelector(".cls").onclick = function () {
+                closeApp(win.id);
+            };
+        });
+
+        document.addEventListener("mousemove", function (event) {
+            if (!dragging) {
+                return;
+            }
+
+            dragging.style.left = event.clientX - dragX + "px";
+            dragging.style.top = Math.max(0, event.clientY - dragY) + "px";
+        });
+
+        document.addEventListener("mouseup", function () {
+            dragging = null;
+        });
+
+
+        function calcKey(key) {
+            let screen = document.getElementById("cscr");
+
+            if (key === "c") {
+                screen.value = "0";
+                return;
+            }
+
+            if (key === "=") {
+                let parts = screen.value.match(/(\d+\.?\d*|[+\-*/])/g);
+
+                if (!parts) {
+                    return;
+                }
+
+                let answer = parseFloat(parts[0]);
+
+                for (let i = 1; i < parts.length; i += 2) {
+                    let operator = parts[i];
+                    let number = parseFloat(parts[i + 1]);
+
+                    if (isNaN(number)) {
+                        break;
+                    }
+
+                    if (operator === "+") {
+                        answer += number;
+                    } else if (operator === "-") {
+                        answer -= number;
+                    } else if (operator === "*") {
+                        answer *= number;
+                    } else if (operator === "/") {
+                        if (number === 0) {
+                            screen.value = "err";
+                            return;
+                        }
+
+                        answer /= number;
+                    }
+                }
+
+                screen.value = isNaN(answer) ? "err" : answer;
+                return;
+            }
+
+            if (screen.value === "0" || screen.value === "err") {
+                screen.value = key;
+            } else {
+                screen.value += key;
             }
         }
 
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'weathercity') {
+
+        function updateClock() {
+            let now = new Date();
+            let time = now.toLocaleTimeString();
+
+            document.getElementById("clk").textContent = time;
+            document.getElementById("bclk").textContent = time;
+
+            document.getElementById("bdt").textContent =
+                now.toLocaleDateString(undefined, {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric"
+                });
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+
+        async function getWeather() {
+            let input = document.getElementById("wcity");
+            let result = document.getElementById("wres");
+            let city = input.value.trim();
+
+            if (!city) {
+                return;
+            }
+
+            result.textContent = "loading...";
+
+            try {
+                let geo = await fetch(
+                    "https://geocoding-api.open-meteo.com/v1/search?name=" +
+                    encodeURIComponent(city) +
+                    "&count=1"
+                );
+
+                let location = await geo.json();
+
+                if (!location.results || location.results.length === 0) {
+                    result.textContent = "city not found";
+                    return;
+                }
+
+                let place = location.results[0];
+
+                let weather = await fetch(
+                    "https://api.open-meteo.com/v1/forecast?latitude=" +
+                    place.latitude +
+                    "&longitude=" +
+                    place.longitude +
+                    "&current_weather=true"
+                );
+
+                let data = await weather.json();
+                let temp = data.current_weather.temperature;
+
+                result.innerHTML =
+                    '<div class="wcityname">' +
+                    place.name +
+                    '</div>' +
+                    '<div class="wtemp">' +
+                    temp +
+                    "°C</div>";
+
+                localStorage.setItem("pcity", city);
+            } catch (error) {
+                console.log("weather error:", error);
+                result.textContent = "error fetching weather";
+            }
+        }
+
+        document.getElementById("wcity").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
                 getWeather();
             }
         });
 
-        const notepadEl = document.querySelector('.notepad');
-        const savedNote = localStorage.getItem('pahalos_note');
-        if (savedNote && notepadEl) notepadEl.value = savedNote;
-        if (notepadEl) {
-            notepadEl.addEventListener('input', () => {
-                localStorage.setItem('pahalos_note', notepadEl.value);
-            });
+
+        let notes = document.getElementById("notepad");
+
+        let oldNote = localStorage.getItem("pnote");
+
+        if (oldNote) {
+            notes.value = oldNote;
         }
 
-        const savedCity = localStorage.getItem('pahalos_city');
-        if (savedCity) {
-            const cityInput = document.getElementById('weathercity');
-            if (cityInput) cityInput.value = savedCity;
+        notes.addEventListener("input", function () {
+            localStorage.setItem("pnote", notes.value);
+        });
+
+
+        let oldCity = localStorage.getItem("pcity");
+
+        if (oldCity) {
+            document.getElementById("wcity").value = oldCity;
         }
     </script>
+
 </body>
 
 </html>
